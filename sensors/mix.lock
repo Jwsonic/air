@@ -1,0 +1,6 @@
+%{
+  "circuits_uart": {:hex, :circuits_uart, "1.4.2", "520817daced77620bc036c168eb42b55ba4b4c141c2de47a199895a35a86e690", [:mix], [{:elixir_make, "~> 0.6", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm", "d3da86c9ef9ef196150797c7de1c7a7d367ebcd0de44f325c36def8654976c06"},
+  "elixir_make": {:hex, :elixir_make, "0.6.1", "8faa29a5597faba999aeeb72bbb9c91694ef8068f0131192fb199f98d32994ef", [:mix], [], "hexpm", "35d33270680f8d839a4003c3e9f43afb595310a592405a00afc12de4c7f55a18"},
+  "gleam_stdlib": {:hex, :gleam_stdlib, "0.11.0", "9b1089739574cdf78a1c25a463d770a98f59e63a92324d17095ad67e867ee549", [:rebar3], [], "hexpm", "5508e169e20369fc8d400481d3f37ccb2cfd880509f63d6e2b6d85f939bc991b"},
+  "mix_gleam": {:hex, :mix_gleam, "0.1.0", "a0cee5d30de865124a32ca6cd53b64c3e2ac57f12adf6e47b88fb673f47c716e", [:mix], [], "hexpm", "9ff518e6aab444c7f2e74038f9383020ef89810cf1f4402911f33b202ffd72e7"},
+}
