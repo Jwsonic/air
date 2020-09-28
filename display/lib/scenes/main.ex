@@ -1,24 +1,64 @@
-defmodule AirDisplay.Scenes.Main do
+defmodule Display.Scenes.Main do
   use Scenic.Scene
   alias Scenic.Graph
 
   import Scenic.Primitives
   require Logger
 
-  @day_sunny_path :code.priv_dir(:air_display) |> Path.join("wi-day-sunny.png")
-  @day_sunny_hash Scenic.Cache.Hash.file!(@day_sunny_path, :sha)
+  alias Display.Components.CurrentStatus
+  alias Display.Components.CurrentStatus.Status
 
-  @x_start 145
-  @y_start 150
-  @width 100
-  @height 100
+  @width 400
+  @height 300
 
-  @graph Graph.build(font_size: 32, font: :roboto_mono, theme: :light, clear_color: :white)
+  @x_offset 5
+  @y_offset 10
+
+  @y_top_row @y_offset + 5
+
+  @init_temp %Status{
+    data: 0,
+    last_updated: DateTime.from_unix!(0),
+    title: "TEMP",
+    unit: "F"
+  }
+
+  @init_humidity %Status{
+    data: 0,
+    last_updated: DateTime.from_unix!(0),
+    title: "HUMIDITY",
+    unit: "%"
+  }
+
+  @init_aqi %Status{
+    data: 0,
+    last_updated: DateTime.from_unix!(0),
+    title: "AQI",
+    unit: ""
+  }
+
+  @graph Graph.build(font_size: 32, font: :roboto, clear_color: :white)
+         |> rectangle({400, 300}, fill: :white)
+         |> CurrentStatus.add_to_graph(
+           @init_temp,
+           id: :temp,
+           translate: {@x_offset, @y_top_row}
+         )
+         |> CurrentStatus.add_to_graph(
+           @init_humidity,
+           id: :humidity,
+           translate: {@x_offset + 140, @y_top_row}
+         )
+         |> CurrentStatus.add_to_graph(
+           @init_aqi,
+           id: :aqi,
+           translate: {@x_offset + 280, @y_top_row}
+         )
+         |> line({{0, @y_offset + 50}, {@width, @y_offset + 50}}, stroke: {2, :black})
 
   def init(_scene_args, _opts) do
     state = %{
-      graph: @graph,
-      count: 0
+      graph: @graph
     }
 
     {:ok, state, push: @graph}

@@ -1,9 +1,9 @@
-defmodule AirDisplay.MixProject do
+defmodule Display.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :air_display,
+      app: :display,
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
@@ -17,7 +17,7 @@ defmodule AirDisplay.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {AirDisplay.Application, []}
+      mod: {Display.Application, []}
     ]
   end
 

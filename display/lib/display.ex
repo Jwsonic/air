@@ -1,6 +1,6 @@
-defmodule AirDisplay do
+defmodule Display do
   @moduledoc """
-  Documentation for `AirDisplay`.
+  Documentation for `Display`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule AirDisplay do
 
   ## Examples
 
-      iex> AirDisplay.hello()
+      iex> Display.hello()
       :world
 
   """

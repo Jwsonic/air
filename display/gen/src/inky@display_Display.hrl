@@ -1,1 +1,0 @@
--record(display, {display, width, height}).

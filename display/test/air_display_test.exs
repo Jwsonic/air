@@ -1,8 +1,8 @@
-defmodule AirDisplayTest do
+defmodule DisplayTest do
   use ExUnit.Case
-  doctest AirDisplay
+  doctest Display
 
   test "greets the world" do
-    assert AirDisplay.hello() == :world
+    assert Display.hello() == :world
   end
 end
