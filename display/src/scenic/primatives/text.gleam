@@ -1,13 +1,15 @@
+import scenic/color.{Color}
 import scenic/graph.{Graph, Id}
 
-pub type Opts =
-  List(String)
-
-pub type Text {
-  Text(text: String, opts: Opts)
+pub type Opts {
+  Fill(Color)
 }
 
-external fn external_text(graph: Graph, text: String, opts: Opts) -> Graph =
+pub type Text {
+  Text(text: String, opts: List(Opts))
+}
+
+external fn external_text(graph: Graph, text: String, opts: List(Opts)) -> Graph =
   "Elixir.Scenic.Primitives" "text"
 
 pub fn add(graph: Graph, text: Text) -> Graph {

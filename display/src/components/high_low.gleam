@@ -1,7 +1,10 @@
 import gleam/int
+import gleam/io
+import scenic/color.{Black}
 import scenic/component.{Component}
 import scenic/graph.{Graph, Id}
 import scenic/primatives/text.{Text}
+import scenic/primatives/triangle.{Triangle, Vertices}
 
 pub type HighLowId {
   Arrow
@@ -25,34 +28,46 @@ pub type Message {
   NewData(Int)
 }
 
-fn extract_text(state: State) -> Text {
-  let State(_, _, value, _) = state
-
+fn add_text(graph: Graph, value: Int) -> Graph {
   value
   |> int.to_string()
-  |> Text([])
-}
-
-fn add_text(graph: Graph, value: Int) {
-  value
-  |> int.to_string()
-  |> Text([])
+  |> Text([text.Fill(Black)])
   |> text.add(graph, _)
 }
 
-fn init(opts: InitOpts) -> State {
+const up_vertices: Vertices = tuple(tuple(10, 0), tuple(0, 20), tuple(20, 20))
+
+const down_vertices: Vertices = tuple(
+  tuple(10, 20),
+  tuple(0, 20),
+  tuple(20, 20),
+)
+
+fn add_triangle(graph: Graph, direction: Direction) -> Graph {
+  let vertices = case direction {
+    Up -> up_vertices
+    Down -> down_vertices
+  }
+
+  let opts = [triangle.Fill(Black)]
+
+  triangle.add(graph, Triangle(vertices, opts))
+}
+
+pub fn init(opts: InitOpts) -> State {
   let graph =
     []
     |> graph.build()
     |> add_text(opts.value)
+    |> add_triangle(opts.direction)
 
   State(graph, opts.direction, opts.value, opts.bound)
 }
 
-fn update(state: State, message: Message) -> State {
+pub fn update(state: State, message: Message) -> State {
   state
 }
 
-pub fn component() -> Component(InitOpts, State, Message) {
+pub fn new() -> Component(InitOpts, State, Message) {
   Component(init, update)
 }
