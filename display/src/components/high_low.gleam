@@ -1,7 +1,7 @@
 import gleam/int
 import gleam/io
 import scenic/color.{Black}
-import scenic/component.{Component}
+import scenic/component.{Component, Ok, Push, Result}
 import scenic/graph.{Graph, Id}
 import scenic/primatives/text.{Text}
 import scenic/primatives/triangle.{Triangle, Vertices}
@@ -54,18 +54,20 @@ fn add_triangle(graph: Graph, direction: Direction) -> Graph {
   triangle.add(graph, Triangle(vertices, opts))
 }
 
-pub fn init(opts: InitOpts) -> State {
+pub fn init(opts: InitOpts) -> Result(State) {
   let graph =
     []
     |> graph.build()
     |> add_text(opts.value)
     |> add_triangle(opts.direction)
 
-  State(graph, opts.direction, opts.value, opts.bound)
+  let state = State(graph, opts.direction, opts.value, opts.bound)
+
+  Push(state, graph)
 }
 
-pub fn update(state: State, message: Message) -> State {
-  state
+pub fn update(state: State, message: Message) -> Result(State) {
+  Ok(state)
 }
 
 pub fn new() -> Component(InitOpts, State, Message) {

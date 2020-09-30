@@ -38,9 +38,10 @@ defmodule GleamComponent do
       def init(data, opts) do
         {:component, init_fn, _} = unquote(component).new()
 
-        case init_fn.(data) |> IO.inspect(label: :init) do
-          {:state, %Graph{} = graph, _, _, _} = state -> {:ok, {state, graph}, push: graph}
-          result -> {:stop, {:bad_init, result}}
+        case init_fn.(data) do
+          {:ok, _state} = result -> result
+          {:push, state, %Graph{} = graph} -> {:ok, state, push: graph}
+          {:error, reason} -> {:stop, {:bad_init, reason}}
         end
       end
 
@@ -48,9 +49,11 @@ defmodule GleamComponent do
         try do
           {:component, _, update_fn} = unquote(component).new()
 
-          state = update_fn.(state, message)
-
-          {:noreply, state}
+          case update_fn.(state, message) do
+            {:ok, state} -> {:noreply, state}
+            {:push, state, %Graph{} = graph} -> {:noreply, state, push: graph}
+            {:error, reason} -> {:stop, {:bad_update, reason}}
+          end
         rescue
           _ -> {:noreply, state}
         end
