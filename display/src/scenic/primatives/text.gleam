@@ -1,8 +1,9 @@
 import scenic/color.{Color}
-import scenic/graph.{Graph, Id}
+import scenic/graph.{Graph, GraphId}
 
 pub type Opts {
   Fill(Color)
+  Id(GraphId)
 }
 
 pub type Text {
@@ -18,15 +19,16 @@ pub fn add(graph: Graph, text: Text) -> Graph {
   external_text(graph, text, opts)
 }
 
-external fn external_modify(
-  graph: Graph,
-  id: Id(id),
-  action: fn(Graph) -> Graph,
-) -> Graph =
+external fn external_modify(graph: Graph, id: GraphId, action: fn(Graph) -> Graph) -> Graph =
   "Elixir.Scenic.Graph" "modify"
 
-pub fn modify(graph: Graph, id: Id(a), text: Text) -> Graph {
-  let action = add(_, text)
+pub fn modify(graph: Graph, id: GraphId, text: Text) -> Graph {
+  let Text(text, opts) = text
+  let action = external_text(_, text, opts)
 
   external_modify(graph, id, action)
+}
+
+pub fn id(graph_id) -> Opts {
+  graph_id |> graph.id() |> Id()
 }

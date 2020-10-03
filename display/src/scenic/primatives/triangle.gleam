@@ -1,8 +1,10 @@
+import gleam/option.{None, Some}
 import scenic/color.{Color}
-import scenic/graph.{Graph, Id}
+import scenic/graph.{Graph, GraphId}
 
 pub type Opts {
   Fill(Color)
+  Id(GraphId)
 }
 
 pub type Point =
@@ -30,13 +32,18 @@ pub fn add(graph: Graph, triangle: Triangle) -> Graph {
 
 external fn external_modify(
   graph: Graph,
-  id: Id(id),
+  id: GraphId,
   action: fn(Graph) -> Graph,
 ) -> Graph =
   "Elixir.Scenic.Graph" "modify"
 
-pub fn modify(graph: Graph, id: Id(a), triangle: Triangle) -> Graph {
-  let action = add(_, triangle)
+pub fn modify(graph: Graph, id: GraphId, triangle: Triangle) -> Graph {
+  let Triangle(vertices, opts) = triangle
+  let action = external_triangle(_, vertices, opts)
 
   external_modify(graph, id, action)
+}
+
+pub fn id(graph_id) -> Opts {
+  graph_id |> graph.id() |> Id()
 }
