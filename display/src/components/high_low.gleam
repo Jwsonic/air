@@ -1,10 +1,12 @@
+import gleam/atom.{Atom}
 import gleam/int
 import gleam/io
-import scenic/color.{Black}
 import scenic/component.{Component, Ok, Push, Result}
 import scenic/graph.{Graph}
-import scenic/primatives/text.{Text}
-import scenic/primatives/triangle.{Triangle, Vertices}
+import scenic/primative.{Fill}
+import scenic/primatives/text
+import scenic/primatives/triangle.{Triangle}
+import scenic/style.{Black, Color, Red}
 
 pub type HighLowId {
   Arrow
@@ -16,8 +18,8 @@ pub type Direction {
   Up
 }
 
-pub type InitOpts {
-  InitOpts(direction: Direction, value: Int, bound: Int)
+pub type InitData {
+  InitData(direction: Direction, value: Int, bound: Int)
 }
 
 pub type State {
@@ -28,42 +30,50 @@ pub type Message {
   NewData(Int)
 }
 
-fn add_text(graph: Graph, value: Int) -> Graph {
-  let opts = [text.Fill(Black), text.id(ValueText)]
-
-  value
-  |> int.to_string()
-  |> Text(opts)
-  |> text.add(graph, _)
+fn build_fill(data: InitData) -> primative.Opt {
+  case data {
+    InitData(Up, value, bound) if value >= bound -> Red
+    InitData(Down, value, bound) if value <= bound -> Red
+    _ -> Black
+  }
+  |> Color()
+  |> Fill()
 }
 
-const up_vertices: Vertices = tuple(tuple(10, 0), tuple(0, 20), tuple(20, 20))
+fn add_text(graph: Graph, value: Int, fill: primative.Opt) -> Graph {
+  value
+  |> int.to_string()
+  |> text.add(graph, _, [fill])
+}
 
-const down_vertices: Vertices = tuple(
+const up_triangle: Triangle = tuple(tuple(10, 0), tuple(0, 20), tuple(20, 20))
+
+const down_triangle: Triangle = tuple(
   tuple(10, 20),
   tuple(0, 20),
   tuple(20, 20),
 )
 
-fn add_arrow(graph: Graph, direction: Direction) -> Graph {
-  let vertices = case direction {
-    Up -> up_vertices
-    Down -> down_vertices
+fn add_arrow(graph: Graph, direction: Direction, fill: primative.Opt) -> Graph {
+  let tri = case direction {
+    Up -> up_triangle
+    Down -> down_triangle
   }
 
-  let opts = [triangle.Fill(Black), triangle.id(Arrow)]
-
-  triangle.add(graph, Triangle(vertices, opts))
+  triangle.add(graph, tri, [fill])
 }
 
-pub fn init(opts: InitOpts) -> Result(State) {
+fn init(data: InitData) -> Result(State) {
+  let fill = build_fill(data)
+  let InitData(direction, value, bound) = data
+
   let graph =
     []
     |> graph.build()
-    |> add_text(opts.value)
-    |> add_arrow(opts.direction)
+    |> add_text(value, fill)
+    |> add_arrow(direction, fill)
 
-  let state = State(graph, opts.direction, opts.value, opts.bound)
+  let state = State(graph, direction, value, bound)
 
   Push(state, graph)
 }
@@ -72,6 +82,9 @@ pub fn update(state: State, message: Message) -> Result(State) {
   Ok(state)
 }
 
-pub fn new() -> Component(InitOpts, State, Message) {
-  Component(init, update)
+pub fn add_to_graph(graph: Graph, data: InitData) -> Graph {
+  "HighLow"
+  |> atom.create_from_string()
+  |> Component(init, update)
+  |> component.add_to_graph(graph, _, data)
 }

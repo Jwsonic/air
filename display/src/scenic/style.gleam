@@ -1,7 +1,7 @@
-import scenic/color.{Color}
-
-pub type ClearColor {
-  ClearColor(color: Color)
+pub type Color {
+  Black
+  Red
+  White
 }
 
 pub type Paint {
@@ -10,4 +10,5 @@ pub type Paint {
 
 pub type Font {
   Roboto
+  RobotoMono
 }

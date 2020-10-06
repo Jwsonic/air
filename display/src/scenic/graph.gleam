@@ -1,5 +1,5 @@
 import gleam/list.{List}
-import scenic/color.{Black, Red, White}
+import scenic/color
 import scenic/style
 
 pub external type Graph
@@ -18,12 +18,3 @@ pub type BuildOpt {
 
 pub external fn build(opts: List(BuildOpt)) -> Graph =
   "Elixir.Scenic.Graph" "build"
-
-pub fn test() -> Graph {
-  build([
-    ClearColor(White),
-    Fill(style.Color(Black)),
-    Font(style.Roboto),
-    FontSize(32),
-  ])
-}

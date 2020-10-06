@@ -1,0 +1,36 @@
+defmodule <%= module_name %> do
+  use Scenic.Component
+
+  alias Scenic.Graph
+
+  require Logger
+
+  def verify(data) do
+    # TODO
+    {:ok, data}
+  end
+
+  def info(_data) do
+    "todo"
+  end
+
+  def init(data, _opts) do
+    case <%% init_fn %>(data) do
+      {:ok, _state} = result -> result
+      {:push, state, %Graph{} = graph} -> {:ok, state, push: graph}
+      {:error, reason} -> {:stop, {:bad_init, reason}}
+    end
+  end
+
+  def handle_info(message, state) do
+    try do
+      case <%% update_fn %>(state, message) do
+        {:ok, state} -> {:noreply, state}
+        {:push, state, %Graph{} = graph} -> {:noreply, state, push: graph}
+        {:error, reason} -> {:stop, {:bad_update, reason}}
+      end
+    rescue
+      _ -> {:noreply, state}
+    end
+  end
+end

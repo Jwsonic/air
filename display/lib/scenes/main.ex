@@ -54,7 +54,7 @@ defmodule Display.Scenes.Main do
            id: :aqi,
            translate: {@x_offset + 280, @y_top_row}
          )
-         |> HighLow.add_to_graph({:init_opts, :up, 5, 2}, id: :high_low, translate: {150, 250})
+         #  |> HighLow.add_to_graph({:init_opts, :up, 5, 2}, id: :high_low, translate: {150, 250})
          |> line({{0, @y_offset + 50}, {@width, @y_offset + 50}}, stroke: {2, :black})
 
   def init(_scene_args, _opts) do
