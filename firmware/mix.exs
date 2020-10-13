@@ -43,7 +43,8 @@ defmodule AirFirmware.MixProject do
       {:shoehorn, "~> 0.6.0"},
       {:ring_logger, "~> 0.8.1"},
       {:toolshed, "~> 0.2.13"},
-      {:display, path: "../display", targets: @all_targets},
+      # {:display, path: "../display", targets: @all_targets},
+      {:air_sensors, path: "../sensors", targets: @all_targets},
 
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.11.3", targets: @all_targets},

@@ -7,8 +7,9 @@ defmodule AirSensors.Application do
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: AirSensors.Worker.start_link(arg)
-      # {AirSensors.Worker, arg}
+      AirSensors.Repo,
+      AirSensors.TemperatureWorker,
+      AirSensors.ParticleWorker
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

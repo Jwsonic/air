@@ -15,6 +15,14 @@ done
 
 echo "Building $NERVES_DEVICE_NAME!"
 
+if [ -n "$BUILD_SENSORS" ]; then
+  echo "Including sensors"
+fi
+
+if [ -n "$BUILD_DISPLAY" ]; then
+  echo "Including display"
+fi
+
 (
   cd firmware || exit
   mix deps.update --all

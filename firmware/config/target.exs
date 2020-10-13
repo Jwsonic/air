@@ -1,5 +1,9 @@
 import Config
 
+config :firmware,
+  build_display: System.get_env("BUILD_DISPLAY") != nil,
+  build_sensors: System.get_env("BUILD_SENSORS") != nil
+
 # Use shoehorn to start the main application. See the shoehorn
 # docs for separating out critical OTP applications such as those
 # involved with firmware updates.
@@ -130,3 +134,12 @@ config :display, :viewport, %{
     }
   ]
 }
+
+
+config :air_sensors, AirSensors.Repo,
+  database: System.get_env("PG_DB"),
+  username: System.get_env("PG_USER"),
+  password: System.get_env("PG_PASSWORD"),
+  hostname: System.get_env("PG_HOST")
+
+config :air_sensors, ecto_repos: [AirSensors.Repo]
