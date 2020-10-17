@@ -52,7 +52,12 @@ defmodule AirFirmware.MixProject do
 
       # Dependencies for specific targets
       {:nerves_system_rpi, "~> 1.12", runtime: false, targets: :rpi},
-      {:nerves_system_rpi0, "~> 1.12", runtime: false, targets: :rpi0},
+      {:nerves_system_rpi0,
+       git: "https://github.com/Jwsonic/nerves_system_rpi0.git",
+       ref: "ac9ab0e6daaa1688ae05f8d2bd0dc0dcb6c73760",
+       runtime: false,
+       targets: :rpi0,
+       nerves: [compile: true]},
       {:nerves_system_rpi2, "~> 1.12", runtime: false, targets: :rpi2},
       {:nerves_system_rpi3, "~> 1.12", runtime: false, targets: :rpi3},
       {:nerves_system_rpi3a, "~> 1.12", runtime: false, targets: :rpi3a},

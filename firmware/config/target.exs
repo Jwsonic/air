@@ -135,7 +135,6 @@ config :display, :viewport, %{
   ]
 }
 
-
 config :air_sensors, AirSensors.Repo,
   database: System.get_env("PG_DB"),
   username: System.get_env("PG_USER"),

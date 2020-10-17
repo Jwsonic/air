@@ -1,8 +1,19 @@
-PRIV = $(MIX_BUILD_PATH)/priv
-SRC = $(MIX_BUILD_PATH)/c_src
+PRIV = $(MIX_APP_PATH)/priv/$(MIX_TARGET)
+SRC = $(MIX_APP_PATH)/c_src
 
-$(PRIV)/pms5003: $(SRC)/pms5003.c
-	# indent -kr -i2 -nut $< || true
-	gcc -O3 -g -Werror -Wall -Wextra -pedantic -o $@ $<
+LDFLAGS += -shared  -dynamiclib
+CFLAGS += -std=gnu99
+CFLAGS ?= -O2 -Wall -Wextra -Wno-unused-parameter -pedantic
 
-all: $(PRIV)/pms5003
+$(PRIV)/%.o: $(SRC)/%.c
+	# $(CC) -O3 -g -Werror -Wall -Wextra -pedantic -o $@ $<
+
+	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -o $@ $<
+
+$(PRIV):
+	mkdir -p $@
+
+clean:
+	$(RM) $(PRIV)/**/*.o
+
+all: $(PRIV) $(PRIV)/pms5003

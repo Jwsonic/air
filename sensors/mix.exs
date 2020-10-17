@@ -9,9 +9,9 @@ defmodule AirSensors.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       erlc_paths: ["src", "gen"],
-      compilers: [:elixir_make, :gleam] ++  Mix.compilers(),
+      compilers: [ :gleam] ++ Mix.compilers(),
       make_targets: ["all"],
-      make_clean: ["clean"],
+      make_clean: ["clean"]
     ]
   end
 

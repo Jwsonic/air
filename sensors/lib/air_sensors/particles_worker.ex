@@ -3,64 +3,53 @@ defmodule AirSensors.ParticleWorker do
 
   require Logger
 
+  alias AirSensors.{Particle, Repo}
+
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
 
-  @name "ttyAMA0"
-  @speed 9600
-
   def init(_args) do
-    {:ok, pid} = Circuits.UART.start_link()
+    schedule()
 
-    :ok = Circuits.UART.open(pid, @name, speed: @speed, active: false)
+    {:ok, :nostate}
+  end
+
+  def handle_info(:particles, state) do
+    # There's some messy code right here. I know it, you know it, and my cat probably knows too.
+    # This is a temporary mess to get things working like they used to before nerves. It will be fixed.
+    with {data, 0} <- read_pm25(), {:ok, pm25} <- parse(data) do
+      Logger.info("Got apm25: #{pm25}")
+
+      %Particle{apm25: pm25}
+      |> Repo.insert()
+      |> inspect()
+      |> Logger.info()
+    else
+      error -> error |> inspect() |> Logger.error()
+    end
 
     schedule()
 
-    {:ok, pid}
+    {:noreply, state}
   end
 
-  def handle_info(:particles, pid) do
-    {:ok, data} = Circuits.UART.read(pid)
-
-    data |> Base.encode16() |> parse()
-
-    schedule()
-
-    {:noreply, pid}
-  end
-
-  @interval 60_000
+  @interval 120_000
 
   defp schedule do
     Process.send_after(self(), :particles, @interval)
   end
 
-  defp parse(<<
-        66,
-        77,
-        _fr_len::big-integer-size(16),
-        pm1::big-integer-size(16),
-        data2::big-integer-size(16),
-        data3::big-integer-size(16),
-        data4::big-integer-size(16),
-        pm25::big-integer-size(16),
-        data6::big-integer-size(16),
-        data7::big-integer-size(16),
-        data8::big-integer-size(16),
-        data9::big-integer-size(16),
-        data10::big-integer-size(16),
-        data11::big-integer-size(16),
-        data12::big-integer-size(16),
-        _reserved::big-integer-size(16),
-        _check_code::big-integer-size(16),
-        _rest::binary
-      >>) do
-    Logger.info("pm 1.0 cf: #{pm1} ug/m^3")
-    Logger.info("pm 2.5 atmospheric: #{pm25} ug/m^3")
+  defp read_pm25 do
+    script = :air_sensors |> :code.priv_dir() |> Path.join("pm2.py")
+
+    System.cmd("python3", [script], stderr_to_stdout: true)
   end
 
-  defp parse(_data) do
-    Logger.warn("Invalid frame")
+  defp parse(data) do
+    case Integer.parse(data) do
+      {int, _rem} -> {:ok, int + 0.0}
+      _ -> {:error, "Invalid int: #{inspect(data)}"}
+    end
   end
 end

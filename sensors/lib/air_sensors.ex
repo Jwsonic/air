@@ -3,16 +3,11 @@ defmodule AirSensors do
   Documentation for `AirSensors`.
   """
 
-  @doc """
-  Hello world.
+  def script do
+    :air_sensors |> :code.priv_dir() |> Path.join("pm2.py")
+  end
 
-  ## Examples
-
-      iex> AirSensors.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def pm2(serial) do
+    System.cmd("python3", [AirSensors.script(), serial], stderr_to_stdout: true)
   end
 end
