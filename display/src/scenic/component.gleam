@@ -8,12 +8,21 @@ pub type Result(state) {
   Error(String)
 }
 
-pub type Component(opts, state, message) {
+pub type Component(data, state, message) {
   Component(
-    name: Atom,
-    init: fn(opts) -> Result(state),
+    init: fn(data) -> Result(state),
     update: fn(state, message) -> Result(state),
   )
+}
+
+pub type Opt(id_type) {
+  // Transforms
+  Pin(pin: tuple(Int, Int))
+  Rotate(radians: Float)
+  Scale(multiplier: Float)
+  Translate(offset: tuple(Int, Int))
+  // ID for locating component in a graph
+  Id(id: id_type)
 }
 
 external fn external_build(component: Component(opts, state, message)) -> Atom =
@@ -21,17 +30,19 @@ external fn external_build(component: Component(opts, state, message)) -> Atom =
 
 external fn external_add_to_graph(
   graph: Graph,
-  mod: tuple(Atom, data_type),
-  List(Int),
+  mod: Atom,
+  data: data_type,
+  opts: List(Opt(id_type))
 ) -> Graph =
-  "Elixir.Primitive.SceneRef" "add_to_graph"
+  "Elixir.Display.Bridge.Component" "add_to_graph"
 
 pub fn add_to_graph(
   graph: Graph,
-  component: Component(opts, state, message),
-  data: opts,
+  component: Component(data_type, state, message),
+  data: data_type,
+  opts: List(Opt(id_type))
 ) -> Graph {
   let module = external_build(component)
 
-  external_add_to_graph(graph, tuple(module, data), [])
+  external_add_to_graph(graph, module, data, opts)
 }

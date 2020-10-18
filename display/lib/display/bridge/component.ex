@@ -4,12 +4,15 @@ defmodule Display.Bridge.Component do
   These functions help "lie" to the gleam compiler to make nice types
   """
 
-  def build!({:component, name, init_fn, _update_fn}) do
-    dynamic_module = Module.concat(Display.GleamComponent, name)
+  def add_to_graph(graph, component, data, opts) do
+    component.add_to_graph(graph, data, opts)
+  end
+
+  def build!({:component, init_fn, _update_fn}) do
+    component_module = module!(init_fn)
+    dynamic_module = Module.concat(Display.GleamComponent, component_module)
 
     if :code.is_loaded(dynamic_module) == false do
-      component_module = module!(init_fn)
-
       required_contents = build_required(component_module)
 
       contents =
@@ -42,6 +45,7 @@ defmodule Display.Bridge.Component do
 
   defp build_required(component_module) do
     quote do
+      use Scenic.Component
       alias Scenic.Graph
 
       def verify(data) do

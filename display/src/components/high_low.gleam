@@ -81,7 +81,7 @@ fn init_arrow(graph: Graph, data: InitData) -> Graph {
   triangle.add(graph, tri, opts)
 }
 
-fn init(data: InitData) -> Result(State) {
+pub fn init(data: InitData) -> Result(State) {
   let InitData(direction, value, bound) = data
 
   let graph =
@@ -100,8 +100,6 @@ pub fn update(state: State, message: Message) -> Result(State) {
 }
 
 pub fn add_to_graph(graph: Graph, data: InitData) -> Graph {
-  "HighLow"
-  |> atom.create_from_string()
-  |> Component(init, update)
-  |> component.add_to_graph(graph, _, data)
+  Component(init, update)
+  |> component.add_to_graph(graph, _, data, [])
 }
