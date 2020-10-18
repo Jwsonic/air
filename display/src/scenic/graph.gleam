@@ -4,11 +4,6 @@ import scenic/style
 
 pub external type Graph
 
-pub external type GraphId
-
-pub external fn id(a) -> GraphId =
-  "Elixir.Display.GraphExtra" "id"
-
 pub type BuildOpt {
   ClearColor(clear_color: color.Color)
   Fill(fill: style.Paint)
