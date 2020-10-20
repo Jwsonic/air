@@ -1,11 +1,10 @@
 import gleam/list.{List}
-import scenic/color
 import scenic/style
 
 pub external type Graph
 
 pub type BuildOpt {
-  ClearColor(clear_color: color.Color)
+  ClearColor(clear_color: style.Color)
   Fill(fill: style.Paint)
   Font(font: style.Font)
   FontSize(size: Int)

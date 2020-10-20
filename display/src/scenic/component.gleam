@@ -32,7 +32,7 @@ external fn external_add_to_graph(
   graph: Graph,
   mod: Atom,
   data: data_type,
-  opts: List(Opt(id_type))
+  opts: List(Opt(id_type)),
 ) -> Graph =
   "Elixir.Display.Bridge.Component" "add_to_graph"
 
@@ -40,7 +40,7 @@ pub fn add_to_graph(
   graph: Graph,
   component: Component(data_type, state, message),
   data: data_type,
-  opts: List(Opt(id_type))
+  opts: List(Opt(id_type)),
 ) -> Graph {
   let module = external_build(component)
 

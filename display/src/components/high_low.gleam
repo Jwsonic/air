@@ -1,7 +1,9 @@
 import gleam/atom
 import gleam/int
 import gleam/io
-import scenic/component.{Component, Ok, Push, Result}
+import gleam/list.{List}
+import gleam/string
+import scenic/component.{Component, Ok, Opt, Push, Result}
 import scenic/graph.{Graph}
 import scenic/primatives/text
 import scenic/primatives/triangle.{Triangle}
@@ -44,38 +46,45 @@ fn build_fill(
   |> constructor()
 }
 
+const text_pos: tuple(Int, Int) = tuple(0, 20)
+
 fn init_text(graph: Graph, data: InitData) -> Graph {
   let InitData(direction, value, bound) = data
 
   let opts = [
     build_fill(direction, value, bound, text.Fill),
     text.Id(ValueText),
+    text.Translate(text_pos),
+    text.Font(style.RobotoMono),
   ]
 
-  value
-  |> int.to_string()
-  |> text.add(graph, _, opts)
+  text.add(graph, int.to_string(value), opts)
 }
 
-const up_triangle: Triangle = tuple(tuple(10, 0), tuple(0, 20), tuple(20, 20))
+const width: Int = 8
 
-const down_triangle: Triangle = tuple(
-  tuple(10, 20),
-  tuple(0, 20),
-  tuple(20, 20),
-)
+const x_pos: Int = 12
+
+const y_pos: Int = 9
 
 fn init_arrow(graph: Graph, data: InitData) -> Graph {
   let InitData(direction, value, bound) = data
 
   let tri = case direction {
-    Up -> up_triangle
-    Down -> down_triangle
+    Up -> tuple(tuple(width / 2, 0), tuple(0, width), tuple(width, width))
+    Down -> tuple(tuple(width / 2, width), tuple(0, width), tuple(width, width))
+  }
+
+  let arrow_pos = case value {
+    value if value > 99 -> tuple(x_pos + 25, y_pos)
+    value if value > 9 -> tuple(x_pos + 15, y_pos)
+    _ -> tuple(x_pos, y_pos)
   }
 
   let opts = [
     build_fill(direction, value, bound, triangle.Fill),
     triangle.Id(Arrow),
+    triangle.Translate(arrow_pos),
   ]
 
   triangle.add(graph, tri, opts)
@@ -99,7 +108,7 @@ pub fn update(state: State, message: Message) -> Result(State) {
   Ok(state)
 }
 
-pub fn add_to_graph(graph: Graph, data: InitData) -> Graph {
+pub fn add_to_graph(graph: Graph, data: InitData, opts: List(Opt(id))) -> Graph {
   Component(init, update)
-  |> component.add_to_graph(graph, _, data, [])
+  |> component.add_to_graph(graph, _, data, opts)
 }
