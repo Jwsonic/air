@@ -15,7 +15,7 @@ pub type Opt(id_type) {
   Rotate(radians: Float)
   Scale(multiplier: Float)
   Translate(offset: tuple(Int, Int))
-  // ID for locating primative in a graph
+  // ID for locating primitive in a graph
   Id(id: id_type)
 }
 

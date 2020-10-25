@@ -5,8 +5,8 @@ import gleam/list.{List}
 import gleam/string
 import scenic/component.{Component, Ok, Opt, Push, Result}
 import scenic/graph.{Graph}
-import scenic/primatives/text
-import scenic/primatives/triangle.{Triangle}
+import scenic/primitives/text
+import scenic/primitives/triangle.{Triangle}
 import scenic/style.{Black, Color, Paint, Red}
 
 pub type HighLowId {
